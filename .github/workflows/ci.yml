@@ -1,0 +1,44 @@
+name: Test & Coverage
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests with coverage
+        run: npm test
+
+      - name: Extract coverage percentage from lcov.info
+        id: extract
+        run: |
+          COVERAGE=$(grep -m1 -Po 'LF:\K\d+' coverage/lcov.info)
+          TOTAL=$(grep -m1 -Po 'LH:\K\d+' coverage/lcov.info)
+          PERCENT=$(awk "BEGIN { printf \"%.2f\", ($TOTAL/$COVERAGE)*100 }")
+          echo "COVERAGE=$PERCENT" >> $GITHUB_OUTPUT
+
+      - name: Generate coverage badge
+        uses: ./
+        with:
+          name: "${{ steps.extract.outputs.COVERAGE }}%"
+          prefix: "coverage"
+          icon: "jest"
+          color: "green"
+          style: "flat-square"
+          path: "badges/coverage.svg"
