@@ -42,6 +42,7 @@ Place this step **before** calling the `badge-generator`.
 ## 🔧 Inputs
 
 | Input          | Required | Description                                              |
+| -------------- | -------- | ---------------------------------------------------- |
 | `prefix`       | ❌        | Left-hand label (e.g. `"coverage"`)                      |
 | `icon`         | ❌        | Icon name (e.g. `jest`, `github`, `codecov`, etc.)       |
 | `color`        | ❌        | Badge color (e.g. `green`, `#ffaa00`)                    |
