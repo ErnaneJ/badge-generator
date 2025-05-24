@@ -1,3 +1,7 @@
+jest.mock('child_process', () => ({
+  execSync: jest.fn()
+}));
+
 jest.mock('simple-git', () => () => ({
   add: jest.fn().mockResolvedValue(true),
   commit: jest.fn().mockResolvedValue(true),
