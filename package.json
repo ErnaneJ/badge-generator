@@ -1,0 +1,41 @@
+{
+  "name": "badge-generator",
+  "version": "1.0.0",
+  "description": "Generate and update custom Shields.io badges using GitHub Actions.",
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "ncc build src/index.js -o dist",
+    "test": "jest --coverage"
+  },
+  "keywords": [
+    "github-action",
+    "badge",
+    "shields.io",
+    "coverage",
+    "ci",
+    "automation",
+    "custom-badge"
+  ],
+  "author": "Ernanej <https://github.com/Ernanej>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Ernanej/badge-generator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Ernanej/badge-generator/issues"
+  },
+  "homepage": "https://github.com/Ernanej/badge-generator#readme",
+  "dependencies": {
+    "@actions/core": "^1.11.1",
+    "@actions/github": "^6.0.1",
+    "simple-git": "^3.27.0"
+  },
+  "devDependencies": {
+    "@vercel/ncc": "^0.38.3",
+    "jest": "^29.7.0"
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
