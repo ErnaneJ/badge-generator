@@ -10,6 +10,9 @@ const simpleGit = require('simple-git');
 async function commitAndPush(filePath) {
   const git = simpleGit();
 
+  await git.addConfig('user.name', 'github-actions');
+  await git.addConfig('user.email', 'github-actions@github.com');
+
   await git.add(filePath);
   await git.commit(`doc: update badge ${filePath}`);
   await git.push();
