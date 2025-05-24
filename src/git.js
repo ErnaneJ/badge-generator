@@ -8,9 +8,9 @@ const { execSync } = require('child_process');
  * @returns {Promise<void>}
  */
 async function commitAndPush(filePath) {
-  // Set author identity using raw git commands
-  execSync('git config user.name "github-actions"');
-  execSync('git config user.email "github-actions@github.com"');
+  // Set author identity
+  execSync('git config --global user.name "github-actions"');
+  execSync('git config --global user.email "github-actions@github.com"');
 
   const git = simpleGit();
   await git.add(filePath);
