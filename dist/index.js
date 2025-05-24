@@ -31943,6 +31943,165 @@ module.exports = {
 
 /***/ }),
 
+/***/ 114:
+/***/ ((module) => {
+
+/**
+ * Builds a Shields.io badge URL using the provided customization options.
+ *
+ * @param {Object} options - Badge configuration options.
+ * @param {string} options.name - Text displayed on the right side of the badge.
+ * @param {string} options.prefix - Label displayed on the left side of the badge.
+ * @param {string} [options.icon] - Optional logo icon name supported by Shields.io.
+ * @param {string} options.color - Background color of the badge.
+ * @param {string} options.style - Badge style (e.g. flat, flat-square, for-the-badge).
+ * @param {string} [options.labelColor] - Optional label background color.
+ * @param {string} [options.logoColor] - Optional logo color.
+ * @param {string} [options.link] - Optional hyperlink or comma-separated links.
+ * @param {string} [options.cacheSeconds] - Optional cache duration in seconds.
+ * @returns {string} A fully constructed Shields.io badge URL.
+ */
+function buildBadgeUrl({ name, prefix, icon, color, style, labelColor, logoColor, link, cacheSeconds }) {
+  const label = encodeURIComponent(prefix);
+  const message = encodeURIComponent(name);
+  const badgeColor = encodeURIComponent(color);
+
+  const params = [`style=${encodeURIComponent(style)}`];
+
+  if (icon) params.push(`logo=${encodeURIComponent(icon)}`);
+  if (logoColor) params.push(`logoColor=${encodeURIComponent(logoColor)}`);
+  if (labelColor) params.push(`labelColor=${encodeURIComponent(labelColor)}`);
+  if (link) params.push(`link=${encodeURIComponent(link)}`);
+  if (cacheSeconds) params.push(`cacheSeconds=${encodeURIComponent(cacheSeconds)}`);
+
+  const query = params.join('&');
+  return `https://img.shields.io/badge/${label}-${message}-${badgeColor}.svg?${query}`;
+}
+
+/**
+ * Downloads a badge image from a given Shields.io URL.
+ *
+ * @param {string} url - The full Shields.io badge URL.
+ * @returns {Promise<Buffer>} A promise that resolves to the badge image as a Buffer.
+ * @throws Will throw an error if the HTTP request fails.
+ */
+async function downloadBadge(url) {
+  const response = await fetch(url);
+  if (!response.ok) {
+    throw new Error(`Failed to download badge: ${response.statusText}`);
+  }
+
+  const arrayBuffer = await response.arrayBuffer();
+  return Buffer.from(arrayBuffer);
+}
+
+module.exports = { buildBadgeUrl, downloadBadge };
+
+
+/***/ }),
+
+/***/ 4387:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const fs = __nccwpck_require__(9896);
+const path = __nccwpck_require__(6928);
+
+/**
+ * Saves a badge image buffer to a specified file path.
+ * Automatically creates directories if they do not exist.
+ *
+ * @param {Buffer} buffer - The badge image buffer (typically SVG content).
+ * @param {string} outputPath - The desired file path for the saved badge.
+ * @returns {string} The absolute path to the saved file.
+ */
+function saveBadgeToFile(buffer, outputPath) {
+  const fullPath = path.resolve(outputPath);
+
+  fs.mkdirSync(path.dirname(fullPath), { recursive: true });
+  fs.writeFileSync(fullPath, buffer);
+
+  return fullPath;
+}
+
+module.exports = { saveBadgeToFile };
+
+
+/***/ }),
+
+/***/ 5661:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const simpleGit = __nccwpck_require__(9065);
+
+/**
+ * Commits and pushes a file to the current Git branch.
+ * Typically used to update a generated badge or build output.
+ *
+ * @param {string} filePath - The path of the file to commit and push.
+ * @returns {Promise<void>} Resolves when the operation is complete.
+ */
+async function commitAndPush(filePath) {
+  const git = simpleGit();
+
+  await git.add(filePath);
+  await git.commit(`doc: update badge ${filePath}`);
+  await git.push();
+}
+
+module.exports = { commitAndPush };
+
+
+/***/ }),
+
+/***/ 5105:
+/***/ ((module, __unused_webpack_exports, __nccwpck_require__) => {
+
+const core = __nccwpck_require__(7484);
+const { buildBadgeUrl, downloadBadge } = __nccwpck_require__(114);
+const { saveBadgeToFile } = __nccwpck_require__(4387);
+const { commitAndPush } = __nccwpck_require__(5661);
+
+/**
+ * Main execution function for the GitHub Action.
+ * 
+ * Retrieves inputs, builds the badge URL, downloads the image,
+ * saves it to the specified path, and commits the result to the repository.
+ *
+ * Automatically fails the action if any step throws an error.
+ *
+ * @returns {Promise<void>}
+ */
+async function run() {
+  try {
+    const inputs = {
+      name: core.getInput('name'),
+      prefix: core.getInput('prefix'),
+      icon: core.getInput('icon'),
+      color: core.getInput('color'),
+      style: core.getInput('style'),
+      path: core.getInput('path'),
+      labelColor: core.getInput('labelColor'),
+      logoColor: core.getInput('logoColor'),
+      link: core.getInput('link'),
+      cacheSeconds: core.getInput('cacheSeconds')
+    };
+
+    const badgeUrl = buildBadgeUrl(inputs);
+    const badgeBuffer = await downloadBadge(badgeUrl);
+    const savedPath = saveBadgeToFile(badgeBuffer, inputs.path);
+    await commitAndPush(savedPath);
+  } catch (error) {
+    core.setFailed(error.message);
+  }
+}
+
+run();
+
+module.exports = run;
+
+
+/***/ }),
+
 /***/ 2613:
 /***/ ((module) => {
 
@@ -33862,52 +34021,12 @@ module.exports = parseParams
 /******/ 	if (typeof __nccwpck_require__ !== 'undefined') __nccwpck_require__.ab = __dirname + "/";
 /******/ 	
 /************************************************************************/
-var __webpack_exports__ = {};
-const core = __nccwpck_require__(7484);
-const fs = __nccwpck_require__(9896);
-const path = __nccwpck_require__(6928);
-const simpleGit = __nccwpck_require__(9065);
-
-async function run() {
-  try {
-    const name = core.getInput('name');
-    const prefix = core.getInput('prefix');
-    const icon = core.getInput('icon');
-    const color = core.getInput('color');
-    const style = core.getInput('style');
-    const outputPath = core.getInput('path');
-
-    const label = encodeURIComponent(prefix);
-    const message = encodeURIComponent(name);
-    const badgeColor = encodeURIComponent(color);
-    const badgeStyle = encodeURIComponent(style);
-    const logo = icon ? `&logo=${encodeURIComponent(icon)}` : '';
-
-    const badgeUrl = `https://img.shields.io/badge/${label}-${message}-${badgeColor}.svg?style=${badgeStyle}${logo}`;
-
-    const response = await fetch(badgeUrl);
-    if (!response.ok) {
-      throw new Error(`Erro ao baixar badge: ${response.statusText}`);
-    }
-
-    const arrayBuffer = await response.arrayBuffer();
-    const buffer = Buffer.from(arrayBuffer);
-
-    const fullPath = path.resolve(outputPath);
-    fs.mkdirSync(path.dirname(fullPath), { recursive: true });
-    fs.writeFileSync(fullPath, buffer);
-
-    const git = simpleGit();
-    await git.add(fullPath);
-    await git.commit(`update badge: ${outputPath}`);
-    await git.push();
-  } catch (error) {
-    core.setFailed(error.message);
-  }
-}
-
-run();
-
-module.exports = __webpack_exports__;
+/******/ 	
+/******/ 	// startup
+/******/ 	// Load entry module and return exports
+/******/ 	// This entry module is referenced by other modules so it can't be inlined
+/******/ 	var __webpack_exports__ = __nccwpck_require__(5105);
+/******/ 	module.exports = __webpack_exports__;
+/******/ 	
 /******/ })()
 ;
