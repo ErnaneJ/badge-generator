@@ -8,14 +8,23 @@ const { execSync } = require('child_process');
  * @returns {Promise<void>}
  */
 async function commitAndPush(filePath) {
-  // Set author identity
-  execSync('git config --global user.name "github-actions"');
-  execSync('git config --global user.email "github-actions@github.com"');
+  try {
+    // Set author identity globally
+    execSync('git config --global user.name "github-actions"');
+    execSync('git config --global user.email "github-actions@github.com"');
+  } catch (e) {
+    console.warn('⚠️ Failed to configure git user. This may cause commit issues in CI.');
+  }
 
   const git = simpleGit();
-  await git.add(filePath);
-  await git.commit(`Update badge: ${filePath}`);
-  await git.push();
+
+  try {
+    await git.add(filePath);
+    await git.commit(`Update badge: ${filePath}`);
+    await git.push();
+  } catch (error) {
+    throw new Error(`Git operation failed: ${error.message}`);
+  }
 }
 
 module.exports = { commitAndPush };
