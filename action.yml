@@ -1,55 +1,62 @@
 name: 'badge-generator'
 description: 'Generate and save custom Shields.io badges directly from your GitHub Actions workflow.'
+author: 'Ernane Ferreira'
 
 inputs:
   name:
-    description: 'Text displayed on the right side of the badge (e.g. "98.7%").'
+    description: 'The right-hand side value of the badge (e.g. "98.7%").'
     required: true
 
   prefix:
-    description: 'Text displayed on the left side of the badge (label). Optional.'
+    description: 'The left-hand label of the badge (e.g. "coverage"). Optional.'
     required: false
     default: ''
 
   icon:
-    description: 'Optional icon/logo name supported by Shields.io.'
+    description: 'Optional logo icon from Shields.io (e.g. "jest", "github", "npm").'
     required: false
     default: ''
 
   color:
-    description: 'Badge background color (e.g. green, blue, #ffaa00).'
+    description: 'The background color of the badge (e.g. "green", "blue", "#ffaa00").'
     required: false
     default: 'blue'
 
   style:
-    description: 'Badge style (e.g. flat, flat-square, plastic, for-the-badge).'
+    description: 'Badge style (flat, flat-square, plastic, for-the-badge, social).'
     required: false
     default: 'flat'
 
   path:
-    description: 'File path where the generated badge will be saved (e.g. badges/coverage.svg).'
+    description: 'Output file path for the generated badge SVG (e.g. "badges/coverage.svg").'
     required: true
 
   labelColor:
-    description: 'Optional background color for the left-side label.'
+    description: 'Optional background color for the left-side label (e.g. "#333").'
     required: false
     default: ''
 
   logoColor:
-    description: 'Optional color for the logo icon.'
+    description: 'Optional color for the logo icon (e.g. "white", "#ffcc00").'
     required: false
     default: ''
 
   link:
-    description: 'Optional link or comma-separated links to embed in the badge.'
+    description: 'Optional URL or comma-separated URLs to make the badge clickable.'
     required: false
     default: ''
 
   cacheSeconds:
-    description: 'Optional cache duration in seconds for the badge.'
+    description: 'Optional Shields.io cache duration in seconds.'
     required: false
     default: ''
+
+outputs: {}
 
 runs:
   using: 'node20'
   main: 'dist/index.js'
+
+branding:
+  icon: 'award'
+  color: 'blue'

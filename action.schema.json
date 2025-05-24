@@ -1,0 +1,65 @@
+{
+  "$schema": "http://json.schemastore.org/github-action",
+  "name": "badge-generator",
+  "description": "Generate and save custom Shields.io badges directly from your GitHub Actions workflow.",
+  "author": "Ernane Ferreira",
+  "branding": {
+    "icon": "award",
+    "color": "blue"
+  },
+  "inputs": {
+    "name": {
+      "description": "The right-hand side value of the badge (e.g. '98.7%').",
+      "required": true
+    },
+    "prefix": {
+      "description": "The left-hand label of the badge (e.g. 'coverage').",
+      "required": false,
+      "default": ""
+    },
+    "icon": {
+      "description": "Optional logo icon from Shields.io (e.g. 'jest', 'github').",
+      "required": false,
+      "default": ""
+    },
+    "color": {
+      "description": "The background color of the badge (e.g. 'green', '#ffaa00').",
+      "required": false,
+      "default": "blue"
+    },
+    "style": {
+      "description": "Badge style ('flat', 'flat-square', 'plastic', 'for-the-badge').",
+      "required": false,
+      "default": "flat"
+    },
+    "path": {
+      "description": "Output file path for the generated badge SVG.",
+      "required": true
+    },
+    "labelColor": {
+      "description": "Optional label background color (e.g. '#333').",
+      "required": false,
+      "default": ""
+    },
+    "logoColor": {
+      "description": "Optional icon/logo color (e.g. 'white').",
+      "required": false,
+      "default": ""
+    },
+    "link": {
+      "description": "Optional link or comma-separated links for the badge.",
+      "required": false,
+      "default": ""
+    },
+    "cacheSeconds": {
+      "description": "Optional Shields.io cache duration (in seconds).",
+      "required": false,
+      "default": ""
+    }
+  },
+  "runs": {
+    "using": "node20",
+    "main": "dist/index.js"
+  },
+  "outputs": {}
+}
