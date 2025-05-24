@@ -53,13 +53,6 @@ Place this step **before** calling the `badge-generator`.
 | `cacheSeconds` | ❌        | Cache time (in seconds) for badge                        |
 | `path`         | ✅        | Output file path for the SVG badge                       |
 
-## 🧪 Testing & Coverage
-
-* 100% unit test coverage
-* Powered by [Jest](https://jestjs.io/)
-* Automatically runs tests and generates a coverage badge on every push to `main`
-* Badge is committed to the repository automatically
-
 ## 🛠️ Local Development
 
 ```bash
@@ -67,19 +60,6 @@ npm install
 npm run build
 node local-test.js   # Test the action locally
 ```
-
-## 🔄 Automatic Build & Distribution
-
-On every push to the `main` branch:
-
-* The action is compiled using [`@vercel/ncc`](https://github.com/vercel/ncc)
-* A production-ready version is committed to `dist/`
-* Coverage is calculated and the badge is updated automatically
-
-## 📦 Distribution
-
-The action is distributed as a single file in the `dist/` directory.
-This ensures it can be used reliably by others in the GitHub Actions ecosystem.
 
 ## 🙏 Acknowledgements
 
