@@ -35,6 +35,7 @@ Before using this action, make sure to configure Git identity in your workflow:
   run: |
     git config --global user.name "github-actions"
     git config --global user.email "github-actions@github.com"
+    git config --global --add safe.directory $GITHUB_WORKSPACE
 ```
 
 Place this step **before** calling the `badge-generator`.
