@@ -3,7 +3,7 @@
 [![Latest Release](https://img.shields.io/github/v/release/ernanej/badge-generator)](https://github.com/ernanej/badge-generator/releases)
 [![Stars](https://img.shields.io/github/stars/ernanej/badge-generator?style=social)](https://github.com/ernanej/badge-generator/stargazers)
 [![Forks](https://img.shields.io/github/forks/ernanej/badge-generator?style=social)](https://github.com/ernanej/badge-generator/network/members)
-![Coverage](badges/coverage.svg)
+![Coverage](https://github.com/ErnaneJ/badge-generator/blob/badge-generator/badges/coverage.svg)
 
 **badge-generator** is a GitHub Action that creates dynamic, customizable badges using [Shields.io](https://shields.io). Perfect for displaying code coverage, build status, quality metrics, or any custom label and value in your repository.
 
