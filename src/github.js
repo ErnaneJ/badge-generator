@@ -13,13 +13,13 @@ async function commentCoverageOnPR({ token, coverage }) {
   const context = github.context;
 
   if (context.eventName !== 'pull_request') {
-    core.info('Not a pull request event. Skipping PR comment.');
+    if(process.env.NODE_ENV != 'test') core.info('Not a pull request event. Skipping PR comment.');
     return;
   }
 
   const prNumber = context.payload.pull_request?.number;
   if (!prNumber) {
-    core.warning('No pull request number found.');
+    if(process.env.NODE_ENV != 'test') core.warning('No pull request number found.');
     return;
   }
 
@@ -29,7 +29,7 @@ async function commentCoverageOnPR({ token, coverage }) {
 
 The latest CI run for this pull request reports a code coverage of \`${coverage}\`.`;
 
-  core.info(`Commenting on PR #${prNumber}...`);
+  if(process.env.NODE_ENV != 'test')  core.info(`Commenting on PR #${prNumber}...`);
   await octokit.rest.issues.createComment({
     ...context.repo,
     issue_number: prNumber,
