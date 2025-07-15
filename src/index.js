@@ -23,8 +23,10 @@ async function run() {
       githubToken: core.getInput('github_token'),
     };
 
-    const currentBranch = github.context.ref.replace('refs/heads/', '');
     const isPR = github.context.eventName === 'pull_request';
+    const currentBranch = isPR
+      ? github.context.payload.pull_request.head.ref
+      : github.context.ref.replace('refs/heads/', '');
 
     const badgeUrl = buildBadgeUrl(inputs);
     const badgeBuffer = await downloadBadge(badgeUrl);
