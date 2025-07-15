@@ -22,23 +22,10 @@ Add the following step to your workflow file (e.g. `.github/workflows/ci.yml`):
     color: 'green'
     style: 'flat-square'
     path: 'badges/coverage.svg'
+    branch: 'badge'
 ```
 
 _👉 See more examples in [`examples/README.md`](examples/README.md)_
-
-## ⚙️ Required Git Configuration
-
-Before using this action, make sure to configure Git identity in your workflow:
-
-```yaml
-- name: Configure Git author
-  run: |
-    git config --global user.name "github-actions"
-    git config --global user.email "github-actions@github.com"
-    git config --global --add safe.directory $GITHUB_WORKSPACE
-```
-
-Place this step **before** calling the `badge-generator`.
 
 ## 🔧 Inputs
 
@@ -53,6 +40,7 @@ Place this step **before** calling the `badge-generator`.
 | `link`         | ❌        | URL(s) the badge should link to (comma-separated if two) |
 | `cacheSeconds` | ❌        | Cache time (in seconds) for badge                        |
 | `path`         | ✅        | Output file path for the SVG badge                       |
+| `branch`       | ❌        | Output branch for the SVG badge                         |
 
 ## 🛠️ Local Development
 

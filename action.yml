@@ -51,6 +51,11 @@ inputs:
     required: false
     default: ''
 
+  branch:
+    description: 'Optional branch to commit the badge to (e.g. "badge").'
+    required: false
+    default: ''
+
 outputs: {}
 
 runs:

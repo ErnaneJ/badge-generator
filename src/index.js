@@ -25,13 +25,14 @@ async function run() {
       labelColor: core.getInput('labelColor'),
       logoColor: core.getInput('logoColor'),
       link: core.getInput('link'),
-      cacheSeconds: core.getInput('cacheSeconds')
+      cacheSeconds: core.getInput('cacheSeconds'),
+      branch: core.getInput('branch'),
     };
 
     const badgeUrl = buildBadgeUrl(inputs);
     const badgeBuffer = await downloadBadge(badgeUrl);
     const savedPath = saveBadgeToFile(badgeBuffer, inputs.path);
-    await commitAndPush(savedPath);
+    await commitAndPush(savedPath, inputs.branch);
   } catch (error) {
     core.setFailed(error.message);
   }
