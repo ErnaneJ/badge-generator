@@ -65,12 +65,7 @@ jobs:
           PERCENT=$(awk "BEGIN { printf \"%.2f\", ($TOTAL/$COVERAGE)*100 }")
           echo "COVERAGE=$PERCENT" >> $GITHUB_OUTPUT
 
-      - name: Configure Git author
-        run: |
-          git config --global user.name "github-actions"
-          git config --global user.email "github-actions@github.com"
-
-      - name: Generate coverage badge
+      - name: Generate coverage badge and/or comment
         uses: ./
         with:
           name: "${{ steps.extract.outputs.COVERAGE }}%"
@@ -79,3 +74,6 @@ jobs:
           color: "green"
           style: "flat-square"
           path: "badges/coverage.svg"
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          badge_branch: "badge-generator"
+          main_branch: "main"

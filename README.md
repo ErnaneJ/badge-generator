@@ -27,20 +27,21 @@ Add the following step to your workflow file (e.g. `.github/workflows/ci.yml`):
 
 _👉 See more examples in [`examples/README.md`](examples/README.md)_
 
-## 🔧 Inputs
-
-| Input          | Required | Description                                              |
-| -------------- | -------- | ---------------------------------------------------- |
-| `prefix`       | ❌        | Left-hand label (e.g. `"coverage"`)                      |
-| `icon`         | ❌        | Icon name (e.g. `jest`, `github`, `codecov`, etc.)       |
-| `color`        | ❌        | Badge color (e.g. `green`, `#ffaa00`)                    |
-| `style`        | ❌        | Badge style (`flat`, `flat-square`, `plastic`, etc.)     |
-| `labelColor`   | ❌        | Background color for the label                           |
-| `logoColor`    | ❌        | Color of the icon/logo                                   |
-| `link`         | ❌        | URL(s) the badge should link to (comma-separated if two) |
-| `cacheSeconds` | ❌        | Cache time (in seconds) for badge                        |
-| `path`         | ✅        | Output file path for the SVG badge                       |
-| `branch`       | ❌        | Output branch for the SVG badge                         |
+| Input          | Required | Description                                                            |
+| -------------- | -------- | ---------------------------------------------------------------------- |
+| `name`         | ✅        | Right-hand side value (e.g. `"98.7%"`)                                 |
+| `prefix`       | ❌        | Left-hand label (e.g. `"coverage"`)                                    |
+| `icon`         | ❌        | Icon name (e.g. `jest`, `github`, `codecov`, etc.)                     |
+| `color`        | ❌        | Badge color (e.g. `green`, `#ffaa00`)                                  |
+| `style`        | ❌        | Badge style (`flat`, `flat-square`, `plastic`, etc.)                   |
+| `labelColor`   | ❌        | Label background color                                                 |
+| `logoColor`    | ❌        | Icon/logo color                                                        |
+| `link`         | ❌        | URL or comma-separated URLs the badge should link to                   |
+| `cacheSeconds` | ❌        | Cache duration (seconds) for badge                                     |
+| `path`         | ✅        | Local file path where badge will be saved (e.g. `badges/coverage.svg`) |
+| `badge_branch` | ❌        | Branch where the badge will be committed (default: `badge-generator`)  |
+| `main_branch`  | ❌        | The main branch name (default: `main`)                                 |
+| `github_token` | ❌        | GitHub token (required for PR comments)                                |
 
 ## 🛠️ Local Development
 

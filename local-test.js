@@ -9,6 +9,7 @@ function setMockInputs() {
   process.env['INPUT_COLOR'] = 'green';
   process.env['INPUT_STYLE'] = 'flat-square';
   process.env['INPUT_PATH'] = 'badges/test-badge.svg';
+  process.env['INPUT_BRANCH'] = 'badge';
 }
 
 /**

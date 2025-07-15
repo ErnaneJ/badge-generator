@@ -51,8 +51,18 @@ inputs:
     required: false
     default: ''
 
-  branch:
-    description: 'Optional branch to commit the badge to (e.g. "badge").'
+  badge_branch:
+    description: 'The branch where the badge should be committed (e.g. badge-generator).'
+    required: false
+    default: 'badge-generator'
+
+  main_branch:
+    description: 'The default branch of the repository (e.g. main).'
+    required: false
+    default: 'main'
+
+  github_token:
+    description: 'GitHub token to post comments on pull requests.'
     required: false
     default: ''
 
