@@ -32,17 +32,34 @@ async function run() {
     const badgeBuffer = await downloadBadge(badgeUrl);
     const savedPath = saveBadgeToFile(badgeBuffer, inputs.path);
 
-    if (currentBranch === inputs.mainBranch) {
+    if (currentBranch === inputs.mainBranch && !isPR) {
       core.info(`On main branch (${inputs.mainBranch}), generating badge...`);
       await commitAndPush(savedPath, inputs.badgeBranch);
-    } else if (isPR && inputs.githubToken) {
-      core.info('On PR branch, commenting coverage...');
-      await commentCoverageOnPR({
-        token: inputs.githubToken,
-        coverage: inputs.name,
+    } else if (inputs.githubToken) {
+      const octokit = github.getOctokit(inputs.githubToken);
+      const { owner, repo } = github.context.repo;
+
+      // Tenta encontrar PR associado à branch
+      const { data: pullRequests } = await octokit.rest.pulls.list({
+        owner,
+        repo,
+        head: `${owner}:${currentBranch}`,
+        state: 'open',
       });
+
+      if (pullRequests.length > 0) {
+        const prNumber = pullRequests[0].number;
+        core.info(`Found open PR #${prNumber} for branch ${currentBranch}. Commenting coverage...`);
+        await commentCoverageOnPR({
+          token: inputs.githubToken,
+          coverage: inputs.name,
+          prNumber,
+        });
+      } else {
+        core.info(`No open PR found for branch ${currentBranch}. Skipping comment.`);
+      }
     } else {
-      core.info('Not on main branch and not a PR. Skipping.');
+      core.info('Not on main branch and no PR context or token. Skipping.');
     }
 
   } catch (error) {

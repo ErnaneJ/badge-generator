@@ -7,19 +7,17 @@ const github = require('@actions/github');
  * @param {Object} options
  * @param {string} options.token - GitHub token
  * @param {string} options.coverage - Coverage percentage string (e.g. "98.5%")
+ * @param {number} [options.prNumber] - Pull request number (optional override)
  * @returns {Promise<void>}
  */
-async function commentCoverageOnPR({ token, coverage }) {
+async function commentCoverageOnPR({ token, coverage, prNumber }) {
   const context = github.context;
+  const number = prNumber || context.payload.pull_request?.number;
 
-  if (context.eventName !== 'pull_request') {
-    if(process.env.NODE_ENV != 'test') core.info('Not a pull request event. Skipping PR comment.');
-    return;
-  }
-
-  const prNumber = context.payload.pull_request?.number;
-  if (!prNumber) {
-    if(process.env.NODE_ENV != 'test') core.warning('No pull request number found.');
+  if (!number) {
+    if (process.env.NODE_ENV !== 'test') {
+      core.warning('No pull request number found.');
+    }
     return;
   }
 
@@ -29,10 +27,13 @@ async function commentCoverageOnPR({ token, coverage }) {
 
 The latest CI run for this pull request reports a code coverage of \`${coverage}\`.`;
 
-  if(process.env.NODE_ENV != 'test')  core.info(`Commenting on PR #${prNumber}...`);
+  if (process.env.NODE_ENV !== 'test') {
+    core.info(`Commenting on PR #${number}...`);
+  }
+
   await octokit.rest.issues.createComment({
     ...context.repo,
-    issue_number: prNumber,
+    issue_number: number,
     body,
   });
 }
