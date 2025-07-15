@@ -1,4 +1,4 @@
-# 📛 badge-generator
+# 📛 badge-generator 
 
 [![Latest Release](https://img.shields.io/github/v/release/ernanej/badge-generator)](https://github.com/ernanej/badge-generator/releases)
 [![Stars](https://img.shields.io/github/stars/ernanej/badge-generator?style=social)](https://github.com/ernanej/badge-generator/stargazers)
