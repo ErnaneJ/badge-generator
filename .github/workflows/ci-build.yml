@@ -3,6 +3,8 @@ name: CI & Build
 on:
   push:
     branches: [main]
+    paths-ignore:
+      - 'dist/**'
   pull_request:
     branches: [main]
 
@@ -27,6 +29,7 @@ jobs:
         run: npm run build
 
       - name: Commit and push dist/
+        if: github.ref == 'refs/heads/main'
         run: |
           git config --global user.name "github-actions"
           git config --global user.email "github-actions@github.com"
