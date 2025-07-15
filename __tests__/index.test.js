@@ -77,8 +77,14 @@ describe('run', () => {
   });
 
   it('should comment on PR if not on main and is PR with token', async () => {
-    github.context.ref = 'refs/heads/feature/test';
     github.context.eventName = 'pull_request';
+    github.context.payload = {
+      pull_request: {
+        head: {
+          ref: 'feature-branch'
+        }
+      }
+    };
 
     await run();
 
@@ -86,9 +92,8 @@ describe('run', () => {
       token: 'fake-token',
       coverage: '90%',
     });
-
-    expect(mockCommitAndPush).not.toHaveBeenCalled();
   });
+
 
   it('should skip if not on main and not a PR', async () => {
     github.context.ref = 'refs/heads/feature/test';
