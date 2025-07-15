@@ -36364,19 +36364,17 @@ const github = __nccwpck_require__(3228);
  * @param {Object} options
  * @param {string} options.token - GitHub token
  * @param {string} options.coverage - Coverage percentage string (e.g. "98.5%")
+ * @param {number} [options.prNumber] - Pull request number (optional override)
  * @returns {Promise<void>}
  */
-async function commentCoverageOnPR({ token, coverage }) {
+async function commentCoverageOnPR({ token, coverage, prNumber }) {
   const context = github.context;
+  const number = prNumber || context.payload.pull_request?.number;
 
-  if (context.eventName !== 'pull_request') {
-    if(process.env.NODE_ENV != 'test') core.info('Not a pull request event. Skipping PR comment.');
-    return;
-  }
-
-  const prNumber = context.payload.pull_request?.number;
-  if (!prNumber) {
-    if(process.env.NODE_ENV != 'test') core.warning('No pull request number found.');
+  if (!number) {
+    if (process.env.NODE_ENV !== 'test') {
+      core.warning('No pull request number found.');
+    }
     return;
   }
 
@@ -36386,10 +36384,13 @@ async function commentCoverageOnPR({ token, coverage }) {
 
 The latest CI run for this pull request reports a code coverage of \`${coverage}\`.`;
 
-  if(process.env.NODE_ENV != 'test')  core.info(`Commenting on PR #${prNumber}...`);
+  if (process.env.NODE_ENV !== 'test') {
+    core.info(`Commenting on PR #${number}...`);
+  }
+
   await octokit.rest.issues.createComment({
     ...context.repo,
-    issue_number: prNumber,
+    issue_number: number,
     body,
   });
 }
@@ -36436,17 +36437,34 @@ async function run() {
     const badgeBuffer = await downloadBadge(badgeUrl);
     const savedPath = saveBadgeToFile(badgeBuffer, inputs.path);
 
-    if (currentBranch === inputs.mainBranch) {
+    if (currentBranch === inputs.mainBranch && !isPR) {
       core.info(`On main branch (${inputs.mainBranch}), generating badge...`);
       await commitAndPush(savedPath, inputs.badgeBranch);
-    } else if (isPR && inputs.githubToken) {
-      core.info('On PR branch, commenting coverage...');
-      await commentCoverageOnPR({
-        token: inputs.githubToken,
-        coverage: inputs.name,
+    } else if (inputs.githubToken) {
+      const octokit = github.getOctokit(inputs.githubToken);
+      const { owner, repo } = github.context.repo;
+
+      // Tenta encontrar PR associado à branch
+      const { data: pullRequests } = await octokit.rest.pulls.list({
+        owner,
+        repo,
+        head: `${owner}:${currentBranch}`,
+        state: 'open',
       });
+
+      if (pullRequests.length > 0) {
+        const prNumber = pullRequests[0].number;
+        core.info(`Found open PR #${prNumber} for branch ${currentBranch}. Commenting coverage...`);
+        await commentCoverageOnPR({
+          token: inputs.githubToken,
+          coverage: inputs.name,
+          prNumber,
+        });
+      } else {
+        core.info(`No open PR found for branch ${currentBranch}. Skipping comment.`);
+      }
     } else {
-      core.info('Not on main branch and not a PR. Skipping.');
+      core.info('Not on main branch and no PR context or token. Skipping.');
     }
 
   } catch (error) {
